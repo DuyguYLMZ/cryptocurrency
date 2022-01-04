@@ -21,14 +21,14 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> with  WidgetsBindingObserver{
   bool waitingForResponse = false;
   int _selectedIndex = 0;
-  final List<AlarmInfo> _searchAlarmResult = [];
+  List<AlarmInfo> _searchAlarmResult = [];
   List<CryptoCurrencyRate> _searchResult = [];
   TextEditingController controller = TextEditingController();
 
   static final List<Widget> _widgetOptions = <Widget>[
     CryptoCurrencyListScreen(),
-    AlarmPage(),
     CryptoCurrencyListScreen(),
+    AlarmPage(),
   ];
   CryptoProvider  _cryptoProvider;
   @override
@@ -82,8 +82,8 @@ class _MainPageState extends State<MainPage> with  WidgetsBindingObserver{
       ),
       body: Column(
         children: [
-           Container(
-              child: _buildSearchBox()),
+          if (_selectedIndex == 2) Container() else Container(
+              child: _buildSearchBox(),),
           Expanded(
             child:  Container(
               child: _searchResult.isNotEmpty || controller.text.isNotEmpty
@@ -100,12 +100,12 @@ class _MainPageState extends State<MainPage> with  WidgetsBindingObserver{
             label: 'list',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.alarm),
-            label: 'alarm',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             label: 'fav',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.alarm),
+            label: 'alarm',
           ),
         ],
         currentIndex: _selectedIndex,
@@ -117,6 +117,7 @@ class _MainPageState extends State<MainPage> with  WidgetsBindingObserver{
   void _onItemTapped(int index) {
     setState(() {
       _searchResult = [];
+      _searchAlarmResult = [];
       controller.text = "";
       _selectedIndex = index;
       if(index==0){
@@ -171,6 +172,7 @@ class _MainPageState extends State<MainPage> with  WidgetsBindingObserver{
     );
   }
 
+
   Future<void> onSearchTextChanged(String text) async {
     if (_selectedIndex == 1) {
       _searchAlarmResult.clear();
@@ -184,8 +186,9 @@ class _MainPageState extends State<MainPage> with  WidgetsBindingObserver{
     }
     if (_selectedIndex == 1) {
       _cryptoProvider.getSearchAlarmList().forEach((alarmDetail) {
-     /*   if (alarmDetail.contains(text))
-          _searchAlarmResult.add(alarmDetail);*/
+        String alarmName = alarmDetail.name.toString();
+        if (alarmName.contains(text)) _searchAlarmResult.add(alarmDetail);
+
       });
     } else {
       _cryptoProvider.getSearchCryptoList().forEach((cryptoDetail) {

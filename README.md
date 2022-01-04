@@ -11,7 +11,7 @@ This application allows to view crypto currency rates from [Coin Market Cap](htt
 
 ```json
 {
-  "api_key": "YOUR_COIN_MARKET_CAP_API_KEY"
+  "api_key": "028ea883-a53a-4433-8922-88d94d6f8fc4"
 }
 ```
 

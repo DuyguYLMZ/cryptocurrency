@@ -134,8 +134,6 @@ class _CryptoFavAlarm extends StatefulWidget {
 }
 
 class _CryptoFavAlarmState extends State<_CryptoFavAlarm> {
-
-
   @override
   Widget build(BuildContext context) {
     List<CryptoCurrencyRate> _favList = widget.cryptoProvider.getFavList();

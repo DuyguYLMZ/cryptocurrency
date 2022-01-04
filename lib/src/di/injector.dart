@@ -29,7 +29,7 @@ class Injector {
     );
     container.registerFactory<CryptoCurrencyRateDataSource>(
       (c) => CoinMarketCapCryptoCurrencyDataSource(
-        'sandbox-api.coinmarketcap.com',
+        'pro-api.coinmarketcap.com',
         c<Client>(),
         c<CoinMarketCapApiKeyProvider>(),
       ),

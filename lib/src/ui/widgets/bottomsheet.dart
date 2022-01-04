@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 showBottomSheetWidget(
     CryptoHelper _helper, BuildContext context, CryptoCurrencyRate crypto ) {
   return showModalBottomSheet<void>(
+    isScrollControlled: true,
     useRootNavigator: true,
     context: context,
     clipBehavior: Clip.antiAlias,
@@ -19,7 +20,12 @@ showBottomSheetWidget(
       ),
     ),
     builder: (context) {
-      return bottomSheet(_helper, crypto );
+      return SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: bottomSheet(_helper,crypto),
+          ));
     },
   );
 

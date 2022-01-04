@@ -15,6 +15,7 @@ class CryptoCurrencyApp extends StatelessWidget {
           ),
         ],
         child:   MaterialApp(
+          debugShowCheckedModeBanner: false,
       title: 'Cryptocurrencies',
       theme: ThemeData(
         primarySwatch: Colors.grey,

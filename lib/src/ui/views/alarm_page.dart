@@ -14,7 +14,7 @@ class AlarmPage extends StatefulWidget {
 
 class _AlarmPageState extends State<AlarmPage> {
 
-  CryptoHelper _cryptoHelper = CryptoHelper();
+  final CryptoHelper _cryptoHelper = CryptoHelper();
   Future<List<AlarmInfo>> _alarms;
   CryptoProvider _cryptoProvider;
   List<AlarmInfo> _currentAlarms;
@@ -22,7 +22,6 @@ class _AlarmPageState extends State<AlarmPage> {
   @override
   void initState() {
     _cryptoHelper.initializeDatabase().then((value) {
-      print('------database intialized');
       loadAlarms();
     });
     _cryptoProvider = Provider.of<CryptoProvider>(context, listen: false);
@@ -37,108 +36,108 @@ class _AlarmPageState extends State<AlarmPage> {
   @override
   Widget build(BuildContext context) {
     loadAlarms();
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            child: FutureBuilder<List<AlarmInfo>>(
-              future: _alarms,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  _currentAlarms = snapshot.data;
-                  if(_currentAlarms!=null && _currentAlarms.length>0){
-                    _cryptoProvider.setSearchAlarmList(_currentAlarms);
-                    return ListView(
-                      children: snapshot.data.map<Widget>((alarm) {
-                        var gradientColor =  GradientTemplate
-                            .gradientTemplate[0].colors;
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 12),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: gradientColor,
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                            ),
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              child: FutureBuilder<List<AlarmInfo>>(
+                future: _alarms,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    _currentAlarms = snapshot.data;
+                    if(_currentAlarms!=null && _currentAlarms.isNotEmpty){
+                      _cryptoProvider.setSearchAlarmList(_currentAlarms);
+                      return ListView(
+                        children: snapshot.data.map<Widget>((alarm) {
+                          final gradientColor =  GradientTemplate
+                              .gradientTemplate[0].colors;
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: gradientColor,
+                              ),
 
-                            borderRadius: BorderRadius.all(Radius.circular(22)),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      const Icon(
-                                        Icons.label,
-                                        color: Colors.white,
-                                        size: 24,
-                                      ),
-                                      SizedBox(width: 8),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            alarm.name.toString(),
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'avenir', fontSize: 20,),
-                                          ),  Text(
-                                            alarm.limitprice.toString(),
-                                            style: const TextStyle(
+                              borderRadius: const BorderRadius.all(Radius.circular(22)),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        const Icon(
+                                          Icons.label,
+                                          color: Colors.white,
+                                          size: 24,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              alarm.name.toString(),
+                                              style: const TextStyle(
                                                 color: Colors.white,
-                                                fontFamily: 'avenir',
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w700),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  /* Switch(
-                                  onChanged: (bool value) {},
-                                  value: true,
-                                  activeColor: Colors.white,
-                                ),*/
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  IconButton(
-                                      icon: Icon(Icons.delete),
-                                      color: Colors.white,
-                                      onPressed: () {
-                                        deleteAlarm(_cryptoHelper,int.parse(alarm.id.toString()));
-                                        _cryptoHelper.initializeDatabase().then((value) {
-                                          print('------database intialized');
-                                          loadAlarms();
-                                        });
-                                      }),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    );
-                  } }
-                return Center(
-                  child: Text(
-                    'Alarm Listeniz Boş.',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                );
-              },
+                                                fontFamily: 'avenir', fontSize: 20,),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  '\$ ${alarm.limitprice}',
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: 'avenir',
+                                                      fontSize: 18,
+                                                      fontWeight: FontWeight.w700),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    IconButton(
+                                        icon: Icon(Icons.delete),
+                                        color: Colors.white,
+                                        onPressed: () {
+                                          deleteAlarm(_cryptoHelper,int.parse(alarm.id.toString()));
+                                          _cryptoHelper.initializeDatabase().then((value) {
+                                            loadAlarms();
+                                          });
+                                        }),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    } }
+                  return const Center(
+                    child: Text(
+                      'Alarm Listeniz Boş.',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
