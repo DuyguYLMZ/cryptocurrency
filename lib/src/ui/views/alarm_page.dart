@@ -1,8 +1,10 @@
 
 import 'package:crypto_currency/constants/theme_data.dart';
+import 'package:crypto_currency/src/domain/entity/crypto_currency_rate.dart';
 import 'package:crypto_currency/src/ui/controller/alarm_helper.dart';
 import 'package:crypto_currency/src/ui/controller/alarmcontroller.dart';
 import 'package:crypto_currency/src/ui/controller/cryptoprovider.dart';
+import 'package:crypto_currency/src/ui/controller/sharedpreference.dart';
 import 'package:crypto_currency/src/ui/models/alarm_info.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,10 +23,18 @@ class _AlarmPageState extends State<AlarmPage> {
 
   @override
   void initState() {
+    _cryptoProvider = Provider.of<CryptoProvider>(context, listen: false);
+    final List<String> favListName=[];
+    final List<CryptoCurrencyRate> favList = _cryptoProvider.getFavList();
+    if(favList!=null && favList.isNotEmpty){
+      for (final CryptoCurrencyRate favCrypto in favList) {
+        favListName.add(favCrypto.name);
+      }
+    }
+    FavSharedPreferences.instance.saveFav(favListName);
     _cryptoHelper.initializeDatabase().then((value) {
       loadAlarms();
     });
-    _cryptoProvider = Provider.of<CryptoProvider>(context, listen: false);
     super.initState();
   }
 

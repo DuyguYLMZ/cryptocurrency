@@ -1,6 +1,6 @@
 import 'package:crypto_currency/src/domain/entity/crypto_currency_rate.dart';
 import 'package:crypto_currency/src/ui/detail/crypto_currency_detail_screen.dart';
-import 'package:crypto_currency/src/ui/list/crypto_currency_list_screen.dart';
+import 'package:crypto_currency/src/ui/views/crypto_currency_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 

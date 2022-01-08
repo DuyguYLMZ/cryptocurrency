@@ -4,6 +4,7 @@ import 'package:crypto_currency/src/ui/common/trend_icon.dart';
 import 'package:crypto_currency/src/ui/controller/alarm_helper.dart';
 import 'package:crypto_currency/src/ui/controller/cryptoprovider.dart';
 import 'package:crypto_currency/src/ui/controller/favouritecryptocontroller.dart';
+import 'package:crypto_currency/src/ui/controller/sharedpreference.dart';
 import 'package:crypto_currency/src/ui/models/crypto.dart';
 import 'package:crypto_currency/src/ui/widgets/bottomsheet.dart';
 import 'package:flutter/material.dart';
@@ -17,11 +18,12 @@ class CryptoCurrencyListItem extends StatelessWidget {
 
   final CryptoProvider cryptoProvider;
 
-  const CryptoCurrencyListItem({Key key,
-    @required this.cryptoCurrencyRate,
-    this.onTap,
-    this.helper,
-    this.cryptoProvider})
+  const CryptoCurrencyListItem(
+      {Key key,
+      @required this.cryptoCurrencyRate,
+      this.onTap,
+      this.helper,
+      this.cryptoProvider})
       : assert(cryptoCurrencyRate != null),
         super(key: key);
 
@@ -29,10 +31,7 @@ class CryptoCurrencyListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     List<CryptoCurrencyRate> favList;
     return Material(
-      child: InkWell(
-          onTap: onTap,
-          child: pageView(context)
-      ),
+      child: InkWell(onTap: onTap, child: pageView(context)),
     );
   }
 
@@ -52,7 +51,7 @@ class CryptoCurrencyListItem extends StatelessWidget {
           const SizedBox(width: 16.0),
           _CryptoCurrencyRate(cryptoCurrencyRate),
           const SizedBox(width: 16.0),
-          _CryptoFavAlarm(helper, cryptoCurrencyRate, cryptoProvider),
+          _CryptoFavAlarm(helper, cryptoCurrencyRate, cryptoProvider)
         ],
       ),
     );
@@ -68,8 +67,7 @@ class _CryptoCurrencyImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
-      'assets/icons/${cryptoCurrencyRate.cryptoCurrency.symbol
-          .toLowerCase()}.svg',
+      'assets/icons/${cryptoCurrencyRate.cryptoCurrency.symbol.toLowerCase()}.svg',
       placeholderBuilder: (context) => const CircleAvatar(),
     );
   }
@@ -119,45 +117,58 @@ class _CryptoCurrencyRate extends StatelessWidget {
 }
 
 class _CryptoFavAlarm extends StatefulWidget {
-
   final CryptoHelper _helper;
   final CryptoCurrencyRate cryptoCurrencyRate;
   final CryptoProvider cryptoProvider;
 
-  const _CryptoFavAlarm(this._helper, this.cryptoCurrencyRate, this.cryptoProvider,
+  const _CryptoFavAlarm(
+      this._helper, this.cryptoCurrencyRate, this.cryptoProvider,
       {Key key})
       : super(key: key);
 
   @override
-  _CryptoFavAlarmState createState() =>
-      _CryptoFavAlarmState();
+  _CryptoFavAlarmState createState() => _CryptoFavAlarmState();
 }
 
+
+
 class _CryptoFavAlarmState extends State<_CryptoFavAlarm> {
+
   @override
   Widget build(BuildContext context) {
-    List<CryptoCurrencyRate> _favList = widget.cryptoProvider.getFavList();
+    FavSharedPreferences.instance.readFav(widget.cryptoProvider);
+    final List<CryptoCurrencyRate> _favList = widget.cryptoProvider.getFavList();
     return Row(
       children: <Widget>[
         IconButton(
           icon: _favList != null && _favList.length > 0
               ? Icon(
-              widget.cryptoProvider.getCryptoFavInfo(widget.cryptoCurrencyRate)
-                  ? Icons.favorite
-                  : Icons.favorite_border,
-              size: 20)
+                  widget.cryptoProvider.getCryptoFavInfo(widget.cryptoCurrencyRate)
+                      ? Icons.favorite
+                      : Icons.favorite_border,
+                  size: 20)
               : Icon(Icons.favorite_border, size: 20),
           color: Colors.red,
           onPressed: () {
             setState(() {
-              if(widget.cryptoProvider.getCryptoFavInfo(widget.cryptoCurrencyRate)){
-                widget.cryptoProvider.addFavList(widget.cryptoCurrencyRate,false);
+              if (widget.cryptoProvider
+                  .getCryptoFavInfo(widget.cryptoCurrencyRate)) {
+                widget.cryptoProvider
+                    .addFavList(widget.cryptoCurrencyRate, false);
                 removeFav(widget._helper, widget.cryptoCurrencyRate.id);
-              }else{
-                widget.cryptoProvider.addFavList(widget.cryptoCurrencyRate,true);
+                final List<String> favListName=[];
+                final List<CryptoCurrencyRate> favList = widget.cryptoProvider.getFavList();
+                if(favList!=null && favList.isNotEmpty){
+                  for (final CryptoCurrencyRate favCrypto in favList) {
+                    favListName.add(favCrypto.name);
+                  }
+                }
+                FavSharedPreferences.instance.saveFav(favListName);
+              } else {
+                widget.cryptoProvider
+                    .addFavList(widget.cryptoCurrencyRate, true);
                 onSaveFavList(widget._helper, widget.cryptoCurrencyRate);
-              }
-
+             }
             });
           },
         ),
@@ -167,7 +178,10 @@ class _CryptoFavAlarmState extends State<_CryptoFavAlarm> {
             color: Colors.white70,
             size: 20,
           ),
-          onPressed: () { showBottomSheetWidget (widget._helper,context,widget.cryptoCurrencyRate);},
+          onPressed: () {
+            showBottomSheetWidget(
+                widget._helper, context, widget.cryptoCurrencyRate);
+          },
         ),
       ],
     );
@@ -175,20 +189,9 @@ class _CryptoFavAlarmState extends State<_CryptoFavAlarm> {
 }
 
 extension _ContextExt on BuildContext {
-  Color get dividerColor =>
-      Theme
-          .of(this)
-          .dividerColor;
+  Color get dividerColor => Theme.of(this).dividerColor;
 
-  TextStyle get subhead =>
-      Theme
-          .of(this)
-          .textTheme
-          .caption;
+  TextStyle get subhead => Theme.of(this).textTheme.caption;
 
-  TextStyle get caption =>
-      Theme
-          .of(this)
-          .textTheme
-          .caption;
+  TextStyle get caption => Theme.of(this).textTheme.caption;
 }

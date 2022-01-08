@@ -7,6 +7,7 @@ class TrendHistory extends Equatable {
   final TrendValue day;
   final TrendValue week;
 
+
   const TrendHistory({
     @required this.hour,
     @required this.day,
@@ -33,6 +34,8 @@ class TrendValue extends Equatable {
 
   @override
   List<Object> get props => [value, trend];
+
+
 }
 
 enum Trend { rising, falling, standing }

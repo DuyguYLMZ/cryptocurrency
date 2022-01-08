@@ -1,10 +1,11 @@
 
 import 'package:crypto_currency/src/domain/entity/crypto_currency_rate.dart';
+import 'package:crypto_currency/src/ui/controller/sharedpreference.dart';
 import 'package:crypto_currency/src/ui/models/alarm_info.dart';
 import 'package:flutter/cupertino.dart';
 
 class CryptoProvider extends ChangeNotifier {
- bool isFavPage;
+ bool isFavPage =false;
  List<CryptoCurrencyRate> favList = [];
  List<String> favListName = [];
  List<AlarmInfo> searchAlarmList = [];
@@ -49,15 +50,17 @@ class CryptoProvider extends ChangeNotifier {
  CryptoCurrencyRate getCryptoCurrency(CryptoCurrencyRate cryptoCurrency){
    CryptoCurrencyRate crypto = cryptoList.singleWhere((it) => it.id == cryptoCurrency.id,
        orElse: () => null);
-   if(crypto!=null){
-    return crypto;
-   }
-   return null;
+   return crypto;
  }
 
  bool getCryptoFavInfo(CryptoCurrencyRate cryptoCurrency){
    CryptoCurrencyRate crypto = getCryptoCurrency(cryptoCurrency);
    if(crypto!=null){
+     if(crypto.isFav==null){
+       return false;
+     }
+     if(crypto.isFav==null)
+       return false;
      return crypto.isFav;
    }
    return false;
@@ -75,17 +78,19 @@ class CryptoProvider extends ChangeNotifier {
    if(isFav){
      setCryptoInfo(cryptoCurrencyRate,isFav);
      favList.add(cryptoCurrencyRate);
+     favListName.add(cryptoCurrencyRate.name);
    }else{
      setCryptoInfo(cryptoCurrencyRate,isFav);
      favList.remove(cryptoCurrencyRate);
-
+     favListName.remove(cryptoCurrencyRate.name);
    }
-
  }
 
  List<CryptoCurrencyRate> getFavList(){
-   favList ??= [];
    if(favListName!=null && favListName.isNotEmpty){
+     for (var name in favListName) {
+        setFavouriteList(name);
+      }
 
    }
    return favList;
@@ -112,6 +117,33 @@ class CryptoProvider extends ChangeNotifier {
    }
    return crypto;
  }
+
+ void setFavouriteList(String cryptoCurrencyName){
+   CryptoCurrencyRate crypto;
+   CryptoCurrencyRate favcrypto;
+   if(allCryptoList!=null && allCryptoList.isNotEmpty){
+     crypto = allCryptoList.singleWhere((it) => it.name == cryptoCurrencyName, orElse: () => null);
+     if(crypto!=null){
+       if(favList!=null && favList.isNotEmpty){
+         favcrypto = favList.singleWhere((it) => it.name == cryptoCurrencyName, orElse: () => null);
+         if (favcrypto!=null) {
+           favList.remove(favcrypto);
+           if(favcrypto.isFav!=null) {
+             favcrypto.isFav = true;
+           }
+           favList.add(favcrypto);
+         }else{
+           if(crypto.isFav!=null) {
+             crypto.isFav = true;
+           }
+           favList.add(crypto);
+         }
+       }
+
+     }
+   }
+ }
+
  void setSearchAlarmList(List<AlarmInfo> searchAlarmList) {
    this.searchAlarmList = searchAlarmList;
  }

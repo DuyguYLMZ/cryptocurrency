@@ -1,17 +1,14 @@
-import 'package:crypto_currency/src/domain/entity/crypto_currency.dart';
 import 'package:crypto_currency/src/ui/controller/cryptoprovider.dart';
-import 'package:crypto_currency/src/ui/controller/sharedpreference.dart';
 import 'package:crypto_currency/src/ui/list/crypto_currency_list_item.dart';
-import 'package:crypto_currency/src/ui/list/crypto_currency_list_screen.dart';
 import 'package:crypto_currency/src/ui/models/alarm_info.dart';
 import 'package:crypto_currency/src/ui/views/alarm_page.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:crypto_currency/src/ui/views/crypto_currency_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'domain/entity/crypto_currency_rate.dart';
 import 'navigation/router.dart';
+
 
 class MainPage extends StatefulWidget {
   @override
@@ -36,6 +33,7 @@ class _MainPageState extends State<MainPage> with  WidgetsBindingObserver{
     _cryptoProvider = Provider.of<CryptoProvider>(context, listen: false);
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
   }
 
   @override
@@ -50,15 +48,7 @@ class _MainPageState extends State<MainPage> with  WidgetsBindingObserver{
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
-      clearPreferences();
-      final List<String> favListName=[];
-      final List<CryptoCurrencyRate> favList = _cryptoProvider.getFavList();
-      if(favList!=null && favList.isNotEmpty){
-        for (final CryptoCurrencyRate favCrypto in favList) {
-          favListName.add(favCrypto.name);
-        }
-      }
-      saveFav(favListName);
+
         break;
     }
 

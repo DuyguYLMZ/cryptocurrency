@@ -20,6 +20,7 @@ void main() {
   _setPortraitMode();
   _injectDependencies();
   _setupBlocDelegate();
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(CryptoCurrencyApp());
 }
 

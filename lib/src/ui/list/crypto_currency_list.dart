@@ -4,7 +4,6 @@ import 'package:crypto_currency/src/ui/controller/cryptoprovider.dart';
 import 'package:crypto_currency/src/ui/list/crypto_currency_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc_patterns/view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class CryptoCurrencyList extends StatelessWidget {
   final List<CryptoCurrencyRate> cryptoCurrencies;
@@ -12,7 +11,7 @@ class CryptoCurrencyList extends StatelessWidget {
   final VoidCallback onRefresh;
   final CryptoHelper helper;
   final bool isFav;
-  final List<CryptoCurrencyRate> favList;
+  List<CryptoCurrencyRate> favList;
   final CryptoProvider cryptoProvider;
 
    CryptoCurrencyList(this.cryptoCurrencies,
@@ -47,11 +46,5 @@ class CryptoCurrencyList extends StatelessWidget {
                     },
                     helper: helper,
                     cryptoProvider: cryptoProvider)));
-  }
-
-  Future<List<String>> _getFavName() async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> favCryptoNames =  prefs.getStringList("favStringName");
-    return favCryptoNames;
   }
 }

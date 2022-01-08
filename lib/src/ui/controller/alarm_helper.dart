@@ -6,17 +6,17 @@ import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 
-final String tableAlarm = 'alarm';
-final String columnId = 'id';
-final String columnTitle = 'title';
+const String tableAlarm = 'alarm';
+const String columnId = 'id';
+const String columnTitle = 'title';
 const String columnDateTime = 'alarmDateTime';
-final String columnCryptoPrice = 'price';
-final String columnLimit = 'limitprice';
+const String columnCryptoPrice = 'price';
+const String columnLimit = 'limitprice';
 
-final String tableFavouriteList = 'favouritelist';
-final String columnPrice = 'cryptoprice';
-final String columnName = 'name';
-final String columnSymbol = 'symbol';
+const String tableFavouriteList = 'favouritelist';
+const String columnPrice = 'cryptoprice';
+const String columnName = 'name';
+const String columnSymbol = 'symbol';
 
 class CryptoHelper {
   static Database _database;
@@ -25,25 +25,21 @@ class CryptoHelper {
   CryptoHelper._createInstance();
 
   factory CryptoHelper() {
-    if (_alarmHelper == null) {
-      _alarmHelper = CryptoHelper._createInstance();
-    }
+    _alarmHelper ??= CryptoHelper._createInstance();
     return _alarmHelper;
   }
 
   Future<Database> get database async {
-    if (_database == null) {
-      _database = await initializeDatabase();
-    }
+    _database ??= await initializeDatabase();
     return _database;
   }
 
 
   Future<Database> initializeDatabase() async {
-    var dir = await getDatabasesPath();
-    var path = dir + "alarm.db";
+    final dir = await getDatabasesPath();
+    final path = "${dir}alarm.db";
 
-    var database = await openDatabase(
+    final database = await openDatabase(
       path,
       version: 1,
       onCreate: (db, version) async {
@@ -69,16 +65,16 @@ class CryptoHelper {
   }
 
   void insertAlarm(AlarmInfo alarmInfo) async {
-    var db = await this.database;
-    var result = await db.insert(tableAlarm, alarmInfo.toMap());
+    final db = await this.database;
+    final result = await db.insert(tableAlarm, alarmInfo.toMap());
     print('result : $result');
   }
 
   Future<List<AlarmInfo>> getAlarms() async {
     List<AlarmInfo> _alarms = [];
 
-    var db = await this.database;
-    var result = await db.query(tableAlarm);
+   final db = await this.database;
+   final result = await db.query(tableAlarm);
     result.forEach((element) {
       var alarmInfo = AlarmInfo.fromMap(element);
       _alarms.add(alarmInfo);
@@ -88,20 +84,20 @@ class CryptoHelper {
   }
 
   void insertFavouriteList(CryptoCurrencyRate crypto) async {
-    var db = await this.database;
-    var result = await db.insert(tableFavouriteList, crypto.toMap());
-    print('result : $result');
+    final db = await database;
+    final result = await db.insert(tableFavouriteList, crypto.toMap());
   }
 
   Future<List<CryptoCurrencyRate>> getCryptoFavouriteLists() async {
-    List<CryptoCurrencyRate> _favouriteLists = [];
+    final List<CryptoCurrencyRate> _favouriteLists = [];
 
-    var db = await this.database;
-    var result = await db.query(tableFavouriteList);
-    result.forEach((element) {
-      var crypto = CryptoCurrencyRate.fromMap(element);
+   final db = await database;
+   final result = await db.query(tableFavouriteList);
+    result.forEach((element)  {
+      final crypto = CryptoCurrencyRate.fromMap(element);
         _favouriteLists.add(crypto);
     });
+
 
     return _favouriteLists;
   }
@@ -112,9 +108,9 @@ class CryptoHelper {
   }
 
   Future deleteFav(int id) async {
+    print("deleteeeed");
     var db = await this.database;
-    return await db
-        .delete(tableFavouriteList, where: '$columnId = ?', whereArgs: [id]);
+    return await db.delete(tableFavouriteList, where: '$columnId = ?', whereArgs: [id]);
   }
 
   Future<bool> isInclued(int id) async {

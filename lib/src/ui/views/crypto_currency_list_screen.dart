@@ -20,7 +20,7 @@ class CryptoCurrencyListScreen extends StatefulWidget {
       _CryptoCurrencyListScreenState();
 }
 
-class _CryptoCurrencyListScreenState extends State<CryptoCurrencyListScreen> {
+class _CryptoCurrencyListScreenState extends State<CryptoCurrencyListScreen>  with WidgetsBindingObserver{
   CryptoCurrencyRateBloc _cryptoCurrencyBloc;
   CryptoHelper _helper = CryptoHelper();
   List<CryptoCurrencyRate> favList;
@@ -35,20 +35,42 @@ class _CryptoCurrencyListScreenState extends State<CryptoCurrencyListScreen> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state)  {
+    switch (state) {
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+        final List<String> favListName=[];
+        final List<CryptoCurrencyRate> favList = _cryptoProvider.getFavList();
+        if(favList!=null && favList.isNotEmpty){
+          for (final CryptoCurrencyRate favCrypto in favList) {
+            favListName.add(favCrypto.name);
+          }
+        }
+        FavSharedPreferences.instance.saveFav(favListName);
+        break;
+      case AppLifecycleState.resumed:
+        // TODO: Handle this case.
+        break;
+    }
+
+  }
+  @override
   void initState() {
     _cryptoProvider = Provider.of<CryptoProvider>(context, listen: false);
-    _helper.initializeDatabase().then((value) {
+    FavSharedPreferences.instance.readFav(_cryptoProvider);
+    /*_helper.initializeDatabase().then((value) {
       loadFavs();
-    });
-    readFav(_cryptoProvider);
-
+    });*/
     isFavPage = _cryptoProvider.getFavPage();
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _cryptoCurrencyBloc = inject<CryptoCurrencyRateBloc>()..loadElements();
   }
 
   @override
   Widget build(BuildContext context) {
+    FavSharedPreferences.instance.readFav(_cryptoProvider);
     return Scaffold(
       body: ViewStateBuilder<List<CryptoCurrencyRate>, CryptoCurrencyRateBloc>(
         bloc: _cryptoCurrencyBloc,
@@ -73,6 +95,7 @@ class _CryptoCurrencyListScreenState extends State<CryptoCurrencyListScreen> {
   @override
   void dispose() {
     _cryptoCurrencyBloc.close();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 }

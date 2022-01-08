@@ -16,17 +16,19 @@ class CryptoCurrencyRate extends Equatable {
   final String name;
   final double cryptoprice;
   final String symbol;
-  bool isFav = false;
+   bool isFav = false;
 
-   CryptoCurrencyRate({
-     this.cryptoCurrency,
-    this.supply,
-     this.price,
-     this.marketCap,
-     this.trendHistory, this.id,this.name,this.cryptoprice,this.symbol
-  });
-
-
+  CryptoCurrencyRate(
+      {this.cryptoCurrency,
+      this.supply,
+      this.price,
+      this.marketCap,
+      this.trendHistory,
+      this.id,
+      this.name,
+      this.cryptoprice,
+      this.symbol,
+      this.isFav});
 
   @override
   List<Object> get props =>
@@ -42,17 +44,24 @@ class CryptoCurrencyRate extends Equatable {
   bool _symbolContainsQuery(String query) =>
       cryptoCurrency.symbol.toLowerCase().contains(query.toLowerCase());
 
-  factory CryptoCurrencyRate.fromMap(Map<String, dynamic> json) => CryptoCurrencyRate(
-      id: int.parse(json['id'].toString()),
-      name: json['name'].toString(),
-      symbol: json['symbol'].toString(),
-      cryptoprice: double.parse(json["cryptoprice"].toString())
-  );
+  factory CryptoCurrencyRate.fromMap(Map<String, dynamic> json) =>
+      CryptoCurrencyRate(
+        id: int.parse(json['id'].toString()),
+        name: json['name'].toString(),
+        symbol: json['symbol'].toString(),
+        cryptoprice: double.parse(json["cryptoprice"].toString()),
+      );
 
   Map<String, dynamic> toMap() => {
-    "id": id,
-    "name": name,
-    "symbol": symbol,
-    "cryptoprice": cryptoprice,
-  };
+        "id": id,
+        "name": name,
+        "symbol": symbol,
+        "cryptoprice": cryptoprice,
+        "supply": supply,
+        "cryptoCurrency": cryptoCurrency,
+        "price": price,
+        "marketCap": marketCap,
+        "trendHistory": trendHistory,
+        "isFav": isFav,
+      };
 }
