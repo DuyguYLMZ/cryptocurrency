@@ -4,7 +4,7 @@ import 'package:crypto_currency/src/ui/views/crypto_currency_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../homepage.dart';
+import '../ui/views/homepage.dart';
 
 class Router {
   Route<dynamic> generateRoute(RouteSettings settings) {

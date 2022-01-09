@@ -8,7 +8,7 @@ class Crypto {
   Crypto({ this.id, this.name,  this.price, this.symbol});
 
   factory Crypto.fromJson(Map<String, dynamic> json) {
-    return new Crypto(
+    return Crypto(
       id: json['id'],
       name: json['name'],
       symbol: json['symbol'],

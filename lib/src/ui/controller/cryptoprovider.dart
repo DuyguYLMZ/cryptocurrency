@@ -17,6 +17,7 @@ class CryptoProvider extends ChangeNotifier {
  void setCryptoList( List<CryptoCurrencyRate>  cryptoCurrencyList){
    cryptoList ??= [];
    cryptoList = cryptoCurrencyList;
+   setFavList(favListName);
  }
 
  void addCryptoList(CryptoCurrencyRate cryptoCurrency){
@@ -26,6 +27,7 @@ class CryptoProvider extends ChangeNotifier {
  void setAllCryptoList(List<CryptoCurrencyRate>  cryptoCurrencyList){
    allCryptoList ??= [];
    allCryptoList = cryptoCurrencyList;
+   setFavList(favListName);
  }
 
  void addAllCryptoList(CryptoCurrencyRate cryptoCurrency){
@@ -77,8 +79,14 @@ class CryptoProvider extends ChangeNotifier {
    favList ??= [];
    if(isFav){
      setCryptoInfo(cryptoCurrencyRate,isFav);
-     favList.add(cryptoCurrencyRate);
-     favListName.add(cryptoCurrencyRate.name);
+     if(!favList.contains(cryptoCurrencyRate)) {
+       cryptoCurrencyRate.isFav = true;
+       favList.add(cryptoCurrencyRate);
+     }
+     if(!favListName.contains(cryptoCurrencyRate.name)) {
+       cryptoCurrencyRate.isFav = true;
+       favListName.add(cryptoCurrencyRate.name);
+     }
    }else{
      setCryptoInfo(cryptoCurrencyRate,isFav);
      favList.remove(cryptoCurrencyRate);

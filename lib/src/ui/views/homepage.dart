@@ -6,8 +6,8 @@ import 'package:crypto_currency/src/ui/views/crypto_currency_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'domain/entity/crypto_currency_rate.dart';
-import 'navigation/router.dart';
+import '../../domain/entity/crypto_currency_rate.dart';
+import '../../navigation/router.dart';
 
 
 class MainPage extends StatefulWidget {
